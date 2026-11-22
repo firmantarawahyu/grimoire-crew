@@ -1,0 +1,19 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+*.log
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Local secrets: never commit real env files
+.env
+.env.*
+!.env.example
+
+# IMPORTANT: never add .kiro/ (or any subfolder) here.
+# Kiroween 2026 requires the .kiro/ directory to be committed.

@@ -1,0 +1,17 @@
+{
+  "name": "grimoire-crew",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A 2D dark-alchemy visual studio, red-team curse sandbox, and deterministic compiler for Kiro and Kiro Crew multi-agent workflows.",
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "test": "pnpm -r --if-present test && pnpm test:scripts",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test:scripts": "node --test \"scripts/test/*.test.mjs\""
+  }
+}
