@@ -139,8 +139,8 @@ export function validateSteeringFile(relPath, text, root) {
     errors.push(`${relPath}: auto inclusion needs name and description`);
   }
 
-  // Live references; inline code spans are documentation, not references.
-  const prose = body.replace(/`[^`\n]*`/g, '');
+  // Live references; code blocks and inline code spans are documentation, not references.
+  const prose = body.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '');
   for (const [, kind, target] of prose.matchAll(FILE_REFERENCE)) {
     if (!existsSync(join(root, ...target.trim().split('/')))) {
       errors.push(`${relPath}: #[[${kind}:${target}]] points to a missing path`);

@@ -5,11 +5,26 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { validateHookFile } from '../lib/kiro-config-rules.mjs';
+import {
+  parseFrontMatter,
+  validateHookFile,
+  validateMcpConfig,
+  validateSteeringFile,
+} from '../lib/kiro-config-rules.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const HOOKS_DIR = fileURLToPath(new URL('../../.kiro/hooks/', import.meta.url));
+const STEERING_DIR = fileURLToPath(new URL('../../.kiro/steering/', import.meta.url));
+const MCP_CONFIG = fileURLToPath(new URL('../../.kiro/settings/mcp.json', import.meta.url));
 const EXPECTED_HOOK_FILES = ['compiler-schema-test.json', 'env-secret-ward.json', 'kiro-submission-guard.json'];
+const EXPECTED_STEERING = {
+  'alchemist-ui-audio.md': 'fileMatch',
+  'architecture.md': 'always',
+  'kiro-crew-schemas.md': 'fileMatch',
+  'project-memory.md': 'always',
+  'security-zero-secret.md': 'always',
+  'session-handoff.md': 'manual',
+};
 
 function readHookFiles() {
   return readdirSync(HOOKS_DIR)
@@ -94,5 +109,64 @@ describe('hook rules reject bad config', () => {
       validHook({ trigger: 'PreToolUse', matcher: '@mcp', action: { type: 'command', command: 'node scripts/grimoire-ward-guard.mjs' } }),
     ]);
     assert.deepEqual(validateHookFile('.kiro/hooks/fixture.json', text, ROOT), []);
+  });
+});
+
+describe('.kiro/steering in this repo', () => {
+  test('exactly the expected steering files exist', () => {
+    const files = readdirSync(STEERING_DIR).filter((name) => name.endsWith('.md')).sort();
+    assert.deepEqual(files, Object.keys(EXPECTED_STEERING).sort());
+  });
+
+  for (const [name, inclusion] of Object.entries(EXPECTED_STEERING)) {
+    test(`${name} is valid with inclusion: ${inclusion}`, () => {
+      const text = readFileSync(`${STEERING_DIR}${name}`, 'utf8');
+      assert.deepEqual(validateSteeringFile(`.kiro/steering/${name}`, text, ROOT), []);
+      assert.equal(parseFrontMatter(text).data.inclusion, inclusion);
+    });
+  }
+});
+
+describe('steering rules reject bad config', () => {
+  const cases = [
+    ['no front matter', '# Title\n', /missing front matter/],
+    ['unknown inclusion mode', '---\ninclusion: sometimes\n---\n', /inclusion must be one of/],
+    ['fileMatch without a pattern', '---\ninclusion: fileMatch\n---\n', /fileMatchPattern/],
+    ['auto without a description', '---\ninclusion: auto\nname: x\n---\n', /name and description/],
+    ['broken file reference', '---\ninclusion: always\n---\nSee #[[file:docs/does-not-exist.md]]\n', /missing path/],
+  ];
+  for (const [label, text, pattern] of cases) {
+    test(label, () => {
+      const errors = validateSteeringFile('.kiro/steering/fixture.md', text, ROOT);
+      assert.ok(errors.some((error) => pattern.test(error)), `expected ${pattern}, got: ${JSON.stringify(errors)}`);
+    });
+  }
+
+  test('file references inside inline code are documentation, not references', () => {
+    const text = '---\ninclusion: always\n---\nSyntax: `#[[file:docs/does-not-exist.md]]`\n';
+    assert.deepEqual(validateSteeringFile('.kiro/steering/fixture.md', text, ROOT), []);
+  });
+
+  test('a secret-looking literal in steering', () => {
+    const fakeKey = ['AKIA', 'Q'.repeat(16)].join('');
+    const errors = validateSteeringFile('.kiro/steering/fixture.md', `---\ninclusion: always\n---\n${fakeKey}\n`, ROOT);
+    assert.ok(errors.some((error) => /secret-looking/.test(error)));
+  });
+
+  test('fileMatchPattern as a JSON-style array parses', () => {
+    const parsed = parseFrontMatter('---\ninclusion: fileMatch\nfileMatchPattern: ["a/**", "b/**"]\n---\nbody\n');
+    assert.deepEqual(parsed.data.fileMatchPattern, ['a/**', 'b/**']);
+    assert.equal(parsed.body, 'body\n');
+  });
+});
+
+describe('.kiro/settings/mcp.json', () => {
+  test('exists and has an mcpServers object', () => {
+    assert.ok(existsSync(MCP_CONFIG), '.kiro/settings/mcp.json is missing');
+    assert.deepEqual(validateMcpConfig('.kiro/settings/mcp.json', readFileSync(MCP_CONFIG, 'utf8')), []);
+  });
+
+  test('rejects a config without mcpServers', () => {
+    assert.match(validateMcpConfig('x', '{"servers": {}}')[0], /mcpServers/);
   });
 });
