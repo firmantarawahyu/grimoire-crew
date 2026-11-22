@@ -1,0 +1,27 @@
+{
+  "name": "@grimoire-crew/server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "GrimoireCrew Mode A server: Hono routes and SSE telemetry, runnable on Node and Bun.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsx watch src/node.ts",
+    "build": "node scripts/build.mjs",
+    "start": "node dist/server.node.mjs",
+    "start:bun": "bun --no-env-file dist/server.bun.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.11",
+    "hono": "^4.13.19"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.12"
+  }
+}
