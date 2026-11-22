@@ -20,13 +20,31 @@ GrimoireCrew is a 2D dark-alchemy visual studio for Kiro and Kiro Crew multi-age
 | `packages/ui` | `@grimoire-crew/ui` | Shared React UI: canvas, inspector, Vesper panel, WebAudio | core, React, `@xyflow/react`, a `HostAdapter` interface |
 | `apps/web` | `@grimoire-crew/web` | Mode A standalone web demo (Vite) | ui, core |
 | `apps/server` | `@grimoire-crew/server` | Mode A backend: Hono + SSE, OpenRouter runner, built-in relics | core |
-| `apps/crew-app` | `@grimoire-crew/crew-app` | Mode B native Kiro Crew App (`app.json`, `dist/index.mjs`) | ui, core, `@kirocrew/app-sdk` (host-provided) |
+| `apps/crew-app` | (no package) | Mode B Kiro Crew app root: `app.json`, later `agents/` and `skills/` | |
+| `apps/crew-app/ui` | `@grimoire-crew/crew-app-ui` | The page bundle `dist/index.mjs` loaded by the Crew dashboard (committed) | ui, core, `@kirocrew/app-sdk` (host-provided) |
+
+## Commands
+
+| Task | Command |
+|---|---|
+| Install (fresh clone or sandbox) | `pnpm install --frozen-lockfile` |
+| All checks | `pnpm typecheck && pnpm test && pnpm build` |
+| One package | `pnpm --filter <package name> <script>`, for example `pnpm --filter @grimoire-crew/core test` |
+| Web app (dev) | `pnpm --filter @grimoire-crew/web dev` (proxies `/api` to the server) |
+| Server (dev, Node) | `pnpm --filter @grimoire-crew/server dev` (port 8787) |
+| Server on Bun | `pnpm --filter @grimoire-crew/server build`, then `pnpm --filter @grimoire-crew/server start:bun` |
+| Crew bundle | `pnpm --filter @grimoire-crew/crew-app-ui build`, then commit `apps/crew-app/ui/dist/index.mjs` |
+| Repository script tests | `pnpm test:scripts` |
 
 Boundary rules:
 
 - `packages/core` is platform-neutral. `src/` has no `node:` imports and no filesystem, network, DOM, timers, or randomness. Files go in and out as `FileMap = Record<string, string>` with POSIX paths, so the same compiler runs in the browser (live preview, ZIP export) and on the server.
 - `packages/ui` never imports `@kirocrew/app-sdk`. It talks to its host through a `HostAdapter` interface, and `apps/web` and `apps/crew-app` each provide an implementation.
-- `@kirocrew/app-sdk` is resolved by the Kiro Crew host import map at runtime. It is not an npm dependency: mark it external in Vite and type it with a local `.d.ts` shim inside `apps/crew-app`.
+- `@kirocrew/app-sdk` is resolved by the Kiro Crew host import map at runtime. It is not an npm dependency: it is external in the Crew bundle's Vite config and typed by `apps/crew-app/ui/src/kirocrew-sdk.d.ts`.
+- The Crew bundle imports only the host modules in `apps/crew-app/ui/host-modules.ts` (React, React DOM, the JSX runtime, `lucide-react`, `@tanstack/react-query`, and the SDK). Everything else is bundled in. A test enforces this.
+- Kiro Crew installs `apps/crew-app/` as a plain clone without a build step, so the bundle is committed and CI fails when it is stale. After any change that affects it, rebuild it and commit `dist/index.mjs`.
+- React stays on 18.3 in every package, because the Crew host provides React 18.3 (decision D-025).
+- Internal packages export TypeScript source (`exports` points at `src/`), so there is no build step between packages.
 - Secrets (OpenRouter key, GitHub token, webhook URL) live only in `apps/server`. See `security-zero-secret.md`.
 
 ## Toolchain
@@ -51,3 +69,5 @@ Boundary rules:
 - In a fresh sandbox, run `pnpm install --frozen-lockfile` before anything else.
 - Stop hooks run the core tests and the submission guard after every turn. A red report during the TDD red phase is expected. Do not loop on a red hook more than once; if it stays red, report to the user.
 - Commit with Conventional Commits, for example `feat(core): add graph schema` or `test(core): add round-trip property`.
+- pnpm blocks dependency install scripts. If a new dependency needs one, add it to `allowBuilds` in `pnpm-workspace.yaml` deliberately; never set `dangerouslyAllowAllBuilds`.
+- The shadcn CLI once wrote a component outside the repository on the user's Windows machine, because the path contains spaces and dots. After `pnpm dlx shadcn@latest add ...` in `packages/ui`, check where the files landed and move them into `packages/ui/src/components/ui/`, rewriting imports to relative paths.

@@ -491,7 +491,7 @@ Target diagnostics: `GC-W003` per cron ritual, `GC-I001` per webhook relic.
 
 `renderWardGuard()` returns one constant string: a zero-dependency ES module script. It is the Day-1 guard (`scripts/grimoire-ward-guard.mjs`) extended with flags:
 
-- `--secret`: the Day-1 rules A (`.env` files) and B (environment dumps and secret-named variables).
+- `--secret`: the Day-1 rules A (`.env` files) and B (environment dumps and secret-named variables), plus commands that print the whole `process.env` object (`process.env` not followed by `.` or `[`, as in `console.log(process.env)` or `bun --print process.env`).
 - `--injection`: blocks when any string in `tool_input` matches an injection marker (case-insensitive): `ignore (all|any|the) (previous|prior|above) instructions`, `disregard (all|the) (previous|prior|above)`, `you are now (in )?(developer|dan|jailbreak)`, `reveal (your|the) (system prompt|instructions)`, `<\|im_start\|>`, `\[\[?system\]\]?:`, `BEGIN (SYSTEM|ADMIN) (PROMPT|OVERRIDE)`.
 - `--allow-host <h>`: when `tool_name` contains `fetch`, extracts `tool_input.url`; blocks when its host matches none of the allowed hosts (exact, or suffix for `*.` entries).
 

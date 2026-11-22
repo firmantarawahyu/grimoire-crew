@@ -10,6 +10,9 @@ fileMatchPattern: ["packages/ui/**", "apps/web/**", "apps/crew-app/**"]
 - 2D only: React, an `@xyflow/react` canvas, animated SVG, and CSS effects. No Three.js, WebGL, game engines, or Rust/GPUI.
 - Theme: a dark alchemy grimoire. Parchment on ink, warm candlelight gold, arcane cyan and violet accents, blood red for breaches. Avoid the generic purple-gradient "AI" look.
 - Styling: Tailwind CSS v4 with design tokens as CSS variables, shadcn/ui (Radix) primitives, Lucide icons.
+- Tokens live in `packages/ui/src/styles.css`: the `--gc-*` palette plus shadcn's semantic variables mapped onto it. Use semantic classes (`bg-primary`, `text-muted-foreground`) or the palette classes (`text-candle`, `bg-arcane`), never raw hex values in components.
+- Tailwind class detection is off by default (`source(none)`). Each stylesheet lists its own folders with `@source`. A new folder with components needs its own `@source` line, or its classes silently disappear.
+- `packages/ui/src/styles.css` has no preflight reset. Only `apps/web` adds it, because the Crew bundle must not restyle the Crew dashboard. Wrap app pages in the `gc-root` class.
 - Layout, three columns:
   - Left: Grimoire Palette (existing Kiro state, presets, core nodes).
   - Center: Living Rune Canvas, with mana pulses along active edges and a shield-deflect effect when a ward blocks.

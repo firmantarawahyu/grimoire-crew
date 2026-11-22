@@ -98,6 +98,7 @@ Every decision that shapes the project, newest at the bottom. To change a decisi
 - Why: Bun suits a small Hono SSE server. But Kiro Crew installs apps with `npm install && npm run build`, hooks and compiled output run on `node`, and judges may not have Bun installed.
 - Constraints for Spec 04: raise Bun's idle timeout and send SSE heartbeats so long LLM waits do not drop the stream; check how to stop Bun from auto-loading `.env` files in local commands; no `bun.lock` (pnpm stays the only lockfile); add a CI smoke test that starts the server under Bun.
 - Refines: D-002, which still applies everywhere else.
+- Update 2026-11-22 (Spec 00): Bun's `--no-env-file` flag disables automatic `.env` loading (https://bun.com/docs/runtime/environment-variables). The `start:bun` script and the CI smoke test use it. The idle timeout is 60 seconds against a 15-second heartbeat.
 - Rejected: Bun for the whole repository (two runtimes to maintain, hook lock-out risk if Bun is missing, unverified in Kiro Web sandboxes), and no Bun at all.
 
 ### D-020 Step limits per agent
@@ -125,6 +126,17 @@ Every decision that shapes the project, newest at the bottom. To change a decisi
 - Day-1 order: Spec 01 `design.md` and `tasks.md`, then Spec 00 (spec and implementation), then push. The Spec 01 design review happens before any Spec 01 implementation, so no code depends on an unreviewed design.
 - Why: integration risks (Crew App build, Bun server, Tailwind v4) surface on day 1, and every later session can work in any package immediately.
 - Rejected: following the original timeline strictly, writing all five specs on day 1.
+
+### D-025 React 18.3 in every package
+- Decision: React, React DOM, and their types stay on 18.3 across the monorepo.
+- Why: the Kiro Crew dashboard provides React 18.3 through its import map (observed in the first-party `personal-shopper` 0.1.2 app), and the shared UI must run on the host's single React instance.
+- Rejected: React 19 (two React versions to test, and hooks from the host would break).
+
+### D-026 Kiro Crew app layout
+- Decision: `apps/crew-app/` is the Crew app root with `app.json` and no `package.json`. Its page bundle is built by the `apps/crew-app/ui` package into `ui/dist/index.mjs`, committed and unminified. Host modules stay external; everything else, including `@grimoire-crew/ui`, is bundled in. The bundle injects its own styles without Tailwind's preflight.
+- Why: matches how the first-party `personal-shopper` app ships (a plain clone, no install-time build), keeps workspace-only dependencies out of Crew's install, and avoids restyling the dashboard.
+- Follow-ups: Tailwind class detection is disabled (`source(none)`) so the committed bundle never feeds back into the next build; CI fails when the bundle is stale.
+- Rejected: building on install (`npm install` cannot resolve `workspace:*` dependencies), publishing the bundle as a release asset (more moving parts for now).
 
 ### D-021 Merging exports into an existing workspace is not in Spec 01
 - Decision: Spec 01 returns a FileMap only. Merging compiled files into a repository that already has files such as `.kiro/settings/mcp.json` belongs to the export feature (Spec 02 and Spec 04), with a preview and a safe merge.
