@@ -92,3 +92,10 @@ Every decision that shapes the project, newest at the bottom. To change a decisi
 ### D-018 Language
 - Decision: conversations with the user are in Bahasa Indonesia; all repository content is in English.
 - Why: the user's preference, and the judges read English.
+
+### D-019 Bun as the deploy runtime for `apps/server` only
+- Decision: Node and pnpm stay the standard for development, tests, hooks, and CI. Only the Mode A server (`apps/server`) is deployed on Bun: install with pnpm, bundle the server into one JS file, run it with Bun (for example the `oven/bun` image). Server code stays runtime-neutral (Hono and web-standard APIs). Only one entry file uses `Bun.*`, and a Node entry exists for tests and for judges without Bun.
+- Why: Bun suits a small Hono SSE server. But Kiro Crew installs apps with `npm install && npm run build`, hooks and compiled output run on `node`, and judges may not have Bun installed.
+- Constraints for Spec 04: raise Bun's idle timeout and send SSE heartbeats so long LLM waits do not drop the stream; check how to stop Bun from auto-loading `.env` files in local commands; no `bun.lock` (pnpm stays the only lockfile); add a CI smoke test that starts the server under Bun.
+- Refines: D-002, which still applies everywhere else.
+- Rejected: Bun for the whole repository (two runtimes to maintain, hook lock-out risk if Bun is missing, unverified in Kiro Web sandboxes), and no Bun at all.

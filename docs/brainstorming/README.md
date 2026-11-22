@@ -11,5 +11,5 @@ These are the original planning documents, written on 2026-11-22 before the repo
 Where these documents disagree with the repository, the repository wins:
 
 - `.kiro/steering/kiro-crew-schemas.md` supersedes `kiro-crew-schemas.md`. It was re-verified against the official docs and lists every correction.
-- The toolchain is pnpm with Vitest. The Bun suggestion in `kiroween-2026-docs.md` was dropped.
+- The toolchain is pnpm with Vitest on Node. The Bun suggestion in `kiroween-2026-docs.md` was narrowed: Bun is only the deploy runtime of `apps/server` (decision D-019).
 - Later decisions are logged in `../decisions.md`.

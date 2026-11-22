@@ -31,7 +31,8 @@ Boundary rules:
 
 ## Toolchain
 
-- pnpm workspaces, Node >= 22.12, TypeScript `strict`, ES modules everywhere. No Bun.
+- pnpm workspaces, Node >= 22.12, TypeScript `strict`, ES modules everywhere.
+- Bun is used in one place only: as the deploy runtime of `apps/server` (decision D-019). Never add a `bun.lock`, never make a hook, test, or compiled file depend on Bun, and keep `Bun.*` APIs inside the server's Bun entry file.
 - Tests: Vitest, always `vitest run` (watch mode hangs hooks and CI). fast-check for property-based tests.
 - Schemas: Zod 4. YAML front matter: the `yaml` package.
 - Root scripts: `pnpm test`, `pnpm typecheck`, `pnpm test:scripts`.
