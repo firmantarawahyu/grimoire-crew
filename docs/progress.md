@@ -44,6 +44,6 @@ Project questions:
 ## Blockers
 
 - Kiro Web cloud sessions need a Pro plan or higher, and the account is on the Free plan.
-  - Claim the 4,000 Kiroween credits on Devpost (Resources tab) before 2026-12-01 and check whether they include Kiro Web access; otherwise upgrade.
+  - The Kiroween credits are claimed (2026-11-22). Still to check: whether they unlock Kiro Web (open https://app.kiro.dev, or check the plan in the Kiro account settings); otherwise upgrade.
   - Unverified fallback: GitHub Codespaces with Kiro CLI in the browser terminal.
   - Until then, work locally in Kiro IDE with `grimoire-crew/` opened as the workspace.
