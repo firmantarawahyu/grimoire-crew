@@ -72,6 +72,7 @@ Out of scope for this spec: executing agents, the curse engine, UI, ZIP packagin
 2. WHEN a Studio_Sidecar is passed to the Compiler, THE Compiler SHALL emit it as `grimoire/<slug>.studio.json` with keys sorted and entries for unknown Node `id`s removed.
 3. THE Compiler SHALL never write Studio_Sidecar data (for example `runtimeModels`) into any agent, manifest, hook, or MCP file.
 4. IF a Studio_Sidecar's `graphSlug` differs from the graph's `slug`, THEN THE Compiler SHALL report `GC-W008` and SHALL NOT emit the sidecar.
+5. IF the Importer finds a Studio_Sidecar that fails validation or names another slug, THEN THE Importer SHALL report `GC-W009`, ignore it, and use the auto-layout instead.
 
 ### Requirement 3: Diagnostics contract
 
@@ -112,6 +113,7 @@ Out of scope for this spec: executing agents, the curse engine, UI, ZIP packagin
 14. WHEN a `skill_tome`, relic, or `ward_hook` Node has no Edges, THE Linter SHALL report `GC-W002`.
 15. WHEN a `skill_tome`, relic, or `ward_hook` is connected to a Reuse_Worker, THE Linter SHALL report `GC-W004`, because a Reuse_Worker's file is never emitted.
 16. WHEN a `web_page_fetcher` or `webhook_notifier` relic has no `allowedHosts`, THE Linter SHALL report `GC-W007`.
+17. WHEN a `cron_ritual` does not have exactly one Edge to an Agent_Node, THE Linter SHALL report `GC-E012`, because a Kiro Crew cron runs exactly one agent.
 
 ### Requirement 5: Security linting and zero-secret output
 
@@ -277,12 +279,13 @@ Out of scope for this spec: executing agents, the curse engine, UI, ZIP packagin
 
 #### Acceptance Criteria
 
-1. THE Importer SHALL expose `importFiles(files)`, returning `{ graph, studio, inventory, passthrough, diagnostics }`, and SHALL not throw for any input.
+1. THE Importer SHALL expose `importFiles(files, { slug? })`, returning `{ graph, studio, inventory, passthrough, diagnostics }`, and SHALL not throw for any input.
 2. WHEN `files` contains a root `app.json`, THE Importer SHALL treat it as the `crew-app` target. WHEN `files` contains paths under `.kiro/`, THE Importer SHALL treat it as the `kiro-workspace` target. When neither applies, THE Importer SHALL report `GC-E100`.
 3. WHEN `files` is the output of `compile(g, { target })` with `ok: true`, THE Importer SHALL return a `graph` equal to the Normalized_Graph of `g`, for both targets.
 4. WHEN the compiled files include a Studio_Sidecar, THE Importer SHALL return it as `studio`. WHEN they do not, THE Importer SHALL return a `studio` whose `positions` come from a deterministic layered auto-layout.
 5. IF a Grimoire_File is malformed (invalid JSON or front matter, a missing required heading, or a SOP row that references an unknown Node), THEN THE Importer SHALL report `GC-E101`, `GC-E102`, or `GC-E103` with the file path and return `graph: null`.
 6. WHEN no Grimoire_File is present, THE Importer SHALL return `graph: null` without an error.
+7. WHEN `files` contains more than one grimoire and no `slug` option is given, THE Importer SHALL report `GC-E104` listing the slugs found and return `graph: null`; WHEN `slug` is given, THE Importer SHALL import that grimoire and treat the others as Foreign_Files.
 
 ### Requirement 16: Best-effort import of existing Kiro state
 
@@ -307,4 +310,4 @@ Out of scope for this spec: executing agents, the curse engine, UI, ZIP packagin
 2. THE Core SHALL compile with TypeScript `strict`, `lib: ["ES2023"]`, and `types: []` for `src`, so that a forbidden API fails typechecking.
 3. THE Core SHALL have a test that fails when a file under `src` imports a module other than `zod`, `yaml`, or a relative path.
 4. THE Core SHALL export from `src/index.ts`: `parseGraph`, `lint`, `compile`, `importFiles`, `renderWardGuard`, the presets, `DIAGNOSTIC_CATALOG`, the graph and Studio_Sidecar schemas, the Contract_Schemas, and their TypeScript types.
-5. THE Core SHALL provide the scripts `test` (`vitest run`), `test:hook` (`vitest run --reporter=dot`), and `typecheck` (`tsc --noEmit`).
+5. THE Core SHALL provide the scripts `test` (`vitest run`), `test:hook` (`vitest run --reporter=dot`), and `typecheck` (`tsc --noEmit`). Spec 00 (workspace skeleton) creates the package and these scripts.

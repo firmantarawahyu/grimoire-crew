@@ -115,6 +115,17 @@ Every decision that shapes the project, newest at the bottom. To change a decisi
 - Open: the Prompt Injection Filter in Crew App exports stays undecided until the Spec 05 check (progress.md question 5b).
 - Rejected: installing hooks automatically from the app's `setup.onEnable`.
 
+### D-023 Compiled file names carry the `grimoire-` prefix and the graph slug
+- Decision: agents and crons are named `grimoire-<slug>-<id>`, skills `grimoire-<skill slug>`, the SOP `grimoire-<slug>`, the Crew app `grimoire-<slug>`.
+- Why: two grimoires can be exported into one repository without name clashes, and the importer recognizes GrimoireCrew files by the prefix.
+- Rejected: `grimoire-<id>` (clashes), no prefix (breaks the `grimoire-*` namespacing rule and strict import).
+
+### D-024 Spec 00: a walking skeleton on Day 1; batch setup work
+- Decision: a standalone Spec 00 (`.kiro/specs/00-workspace-skeleton/`) sets up every package (`core`, `ui`, `web`, `server`, `crew-app`), installs the framework dependencies once, and extends CI (build, pnpm cache, Bun smoke test). Spec 01's old task 1 (core package scaffold) moves into Spec 00. Feature-specific libraries are still added by the spec that needs them. Specs 02 to 05 are written after Spec 01, because they depend on the core API.
+- Day-1 order: Spec 01 `design.md` and `tasks.md`, then Spec 00 (spec and implementation), then push. The Spec 01 design review happens before any Spec 01 implementation, so no code depends on an unreviewed design.
+- Why: integration risks (Crew App build, Bun server, Tailwind v4) surface on day 1, and every later session can work in any package immediately.
+- Rejected: following the original timeline strictly, writing all five specs on day 1.
+
 ### D-021 Merging exports into an existing workspace is not in Spec 01
 - Decision: Spec 01 returns a FileMap only. Merging compiled files into a repository that already has files such as `.kiro/settings/mcp.json` belongs to the export feature (Spec 02 and Spec 04), with a preview and a safe merge.
 - Why: keeps Spec 01 pure and small; the merge needs UI and user confirmation.
