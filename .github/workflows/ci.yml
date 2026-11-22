@@ -15,20 +15,63 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
       # Reads the pnpm version from "packageManager" in package.json.
       - uses: pnpm/action-setup@v4
 
-      # Add `cache: pnpm` once packages have dependencies (Spec 01 task 1).
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm build
+
+      # Kiro Crew installs the app as a plain clone, so the committed bundle must be current.
+      - name: Committed Kiro Crew bundle is up to date
+        run: |
+          if [ -n "$(git status --porcelain -- apps/crew-app/ui/dist)" ]; then
+            echo "apps/crew-app/ui/dist is stale: run 'pnpm --filter @grimoire-crew/crew-app-ui build' and commit the result." >&2
+            git status --porcelain -- apps/crew-app/ui/dist >&2
+            exit 1
+          fi
+
       - name: Kiroween submission guard
         run: node scripts/kiro-submission-guard.mjs
+
+  bun-smoke:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @grimoire-crew/server build
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Decision D-019: the Mode A server deploys on Bun.
+      - name: Server answers /api/health on Bun
+        run: |
+          bun --no-env-file apps/server/dist/server.bun.mjs &
+          for attempt in $(seq 1 40); do
+            if curl -fsS http://localhost:8787/api/health; then
+              echo
+              exit 0
+            fi
+            sleep 0.5
+          done
+          echo "The Bun server did not answer /api/health within 20 seconds." >&2
+          exit 1

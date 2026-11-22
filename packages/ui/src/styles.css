@@ -7,9 +7,14 @@
  */
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+/*
+ * source(none): no automatic class detection. Every stylesheet lists its own
+ * sources with @source, so builds never scan build output (the committed Crew
+ * bundle would otherwise feed its own class names back into the next build).
+ */
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
 
-/* Scan this package's components for class names, wherever the app's CSS lives. */
+/* This package's components, wherever the app's CSS lives. */
 @source "./";
 
 /*
