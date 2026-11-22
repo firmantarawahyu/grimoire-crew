@@ -1,0 +1,26 @@
+{
+  "name": "@grimoire-crew/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Grimoire graph schema, linter, compiler, and importer for Kiro and Kiro Crew files.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:hook": "vitest run --reporter=dot",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "fast-check": "^4.10.3",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.12"
+  }
+}

@@ -1,6 +1,8 @@
 # Dependencies and build output
 node_modules/
 dist/
+# The Kiro Crew bundle is committed: Crew installs the app as a plain clone.
+!apps/crew-app/ui/dist/
 coverage/
 .vite/
 *.tsbuildinfo

@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Platform-neutral core: no Node, DOM, or Bun globals (Spec 01 requirement 17.2).
+    "lib": ["ES2023"],
+    "types": []
+  },
+  "include": ["src"]
+}
