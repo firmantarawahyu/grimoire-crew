@@ -13,13 +13,15 @@ Last updated: 2026-11-22. Deadline: 2026-12-04 14:00 PST (2026-12-05 05:00 WIB).
   - `docs/` memory files and CI.
   - `pnpm test:scripts` is green.
 
+- Day 1 task 7: published as the public repository https://github.com/firmantarawahyu/grimoire-crew.
+
 ## In progress
 
-- Day 1 task 7: publish to GitHub.
+- Day 1 task 8: `.kiro/specs/01-core-schema-and-compiler/requirements.md` is a draft waiting for the user's review (review gate). Not approved yet.
 
 ## Next
 
-- Day 1 tasks 8 to 10: write Spec 01 (`requirements.md`, then `design.md`, then `tasks.md`) with a user review after each of the first two.
+- After the user approves the requirements: Day 1 task 9 (`design.md`, second review gate), then task 10 (`tasks.md`).
 - Then start implementation with: "Execute task 1 of spec 01-core-schema-and-compiler".
 
 ## Open questions
