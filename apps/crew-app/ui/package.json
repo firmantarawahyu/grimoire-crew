@@ -1,0 +1,32 @@
+{
+  "name": "@grimoire-crew/crew-app-ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "GrimoireCrew page bundle for the Kiro Crew dashboard (dist/index.mjs is committed).",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@grimoire-crew/ui": "workspace:*",
+    "@tailwindcss/vite": "^4.3.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^22.20.5",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.3.0",
+    "jsdom": "^31.0.1",
+    "lucide-react": "^1.77.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.3.5",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.8",
+    "vitest": "^4.1.12"
+  }
+}

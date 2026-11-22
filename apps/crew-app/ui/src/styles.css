@@ -1,0 +1,14 @@
+/*
+ * Styles injected by the Crew bundle. No Tailwind preflight: the bundle lives
+ * inside the Kiro Crew dashboard and must not reset the host's styles.
+ */
+@import "@grimoire-crew/ui/styles.css";
+
+@source "./";
+
+.gc-root {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  border-radius: var(--radius);
+}
