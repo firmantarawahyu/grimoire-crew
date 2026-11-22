@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "grimoire-compiler-schema-test",
+      "description": "After each agent turn, runs the packages/core Vitest suite (vitest run) when packages/core has uncommitted changes. Silent when green; failures go back to the agent. Uses Stop instead of a file-save trigger so it also runs in Kiro Web cloud sessions.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "node scripts/hook-core-tests.mjs"
+      },
+      "timeout": 180,
+      "enabled": true
+    }
+  ]
+}

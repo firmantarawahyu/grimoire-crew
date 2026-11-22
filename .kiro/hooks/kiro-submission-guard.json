@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "grimoire-kiro-submission-guard",
+      "description": "After each agent turn, checks the Kiroween submission rules: .kiro/ is not git-ignored, LICENSE is MIT, no real .env file is tracked, and .kiro/settings/mcp.json uses ${VAR} placeholders only. Silent when everything passes.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro-submission-guard.mjs"
+      },
+      "timeout": 30,
+      "enabled": true
+    }
+  ]
+}
