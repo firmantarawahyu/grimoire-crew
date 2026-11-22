@@ -2,7 +2,6 @@ import { useNotify } from "@kirocrew/app-sdk";
 import { Flame } from "lucide-react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import * as React from "react";
-// ../../../node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
 function r(e) {
 	var t, f, n = "";
 	if ("string" == typeof e || "number" == typeof e) n += e;
@@ -16,7 +15,6 @@ function clsx() {
 	for (var e, t, f = 0, n = "", o = arguments.length; f < o; f++) (e = arguments[f]) && (t = r(e)) && (n && (n += " "), n += t);
 	return n;
 }
-// ../../../node_modules/.pnpm/tailwind-merge@3.7.1/node_modules/tailwind-merge/dist/bundle-mjs.mjs
 /**
 * Concatenates two arrays faster than the array spread operator.
 */
@@ -3563,7 +3561,6 @@ function GrimoireMark({ subtitle, className }) {
 		})]
 	});
 }
-// ../../../node_modules/.pnpm/class-variance-authority@0.7.1/node_modules/class-variance-authority/dist/index.mjs
 /**
 * Copyright 2022 Joe Bell. All rights reserved.
 *
@@ -3615,7 +3612,6 @@ var cva = (base, config) => (props) => {
 		] : acc;
 	}, []), props === null || props === void 0 ? void 0 : props.class, props === null || props === void 0 ? void 0 : props.className);
 };
-// ../../../node_modules/.pnpm/@radix-ui+react-compose-ref_e97e486cb199e6c04488e16201cd16d0/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
 var __defProp$1 = Object.defineProperty;
 var __name$1 = (target, value) => __defProp$1(target, "name", {
 	value,
@@ -3648,7 +3644,6 @@ function useComposedRefs(...refs) {
 	return React.useCallback(composeRefs(...refs), refs);
 }
 __name$1(useComposedRefs, "useComposedRefs");
-// ../../../node_modules/.pnpm/@radix-ui+react-slot@1.5.0_@types+react@18.3.31_react@18.3.1/node_modules/@radix-ui/react-slot/dist/index.mjs
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", {
 	value,

@@ -34,6 +34,12 @@ describe('committed Crew bundle', () => {
     expect(imports).toContain('react');
   });
 
+  test('contains no machine-specific dependency paths', () => {
+    const code = readFileSync(BUNDLE, 'utf8');
+    expect(code).not.toMatch(/node_modules[\\/]\.pnpm/);
+    expect(code).not.toContain('\r\n');
+  });
+
   test('has a default export and carries no preflight reset', () => {
     const code = readFileSync(BUNDLE, 'utf8');
     expect(code).toMatch(/export\s*\{[^}]*\bas default\b[^}]*\}|export default/);
