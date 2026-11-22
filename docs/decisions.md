@@ -105,6 +105,16 @@ Every decision that shapes the project, newest at the bottom. To change a decisi
 - Why: the conductor plans and delegates, so it needs more steps than a focused worker.
 - Rejected: 3 to 5 for every agent.
 
+### D-022 How wards reach Kiro Crew App exports
+- Decision: the `kiro-workspace` target exports wards as a hooks file plus the guard script. The `crew-app` target, whose manifest has no hooks field, uses three layers:
+  1. Spec 01: permission deny rules in every compiled agent.
+  2. Spec 05: verify on the local Crew install whether inline `hooks` in an agent JSON run under Kiro Crew, and from which working directory. If they do, compile wards into them.
+  3. Later: an opt-in Vesper action, "Install wards into this workspace", that writes `.kiro/hooks/` files only after the user approves. Never installed automatically or globally.
+- Kiro Crew's own protections (credential redaction, sensitive-path checks) also apply.
+- Why: deny rules are deterministic and available now. Inline hooks are unverified. A silently installed global hook would affect every workspace.
+- Open: the Prompt Injection Filter in Crew App exports stays undecided until the Spec 05 check (progress.md question 5b).
+- Rejected: installing hooks automatically from the app's `setup.onEnable`.
+
 ### D-021 Merging exports into an existing workspace is not in Spec 01
 - Decision: Spec 01 returns a FileMap only. Merging compiled files into a repository that already has files such as `.kiro/settings/mcp.json` belongs to the export feature (Spec 02 and Spec 04), with a preview and a safe merge.
 - Why: keeps Spec 01 pure and small; the merge needs UI and user confirmation.
