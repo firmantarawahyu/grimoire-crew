@@ -6,7 +6,7 @@ This spec covers `@grimoire-crew/core` (`packages/core`): the platform-neutral h
 
 The output formats follow `.kiro/steering/kiro-crew-schemas.md`, which was verified against the official Kiro documentation on 2026-11-22.
 
-Out of scope for this spec: executing agents, the curse engine, UI, ZIP packaging, writing files to disk, and merging compiled files into an existing workspace.
+Out of scope for this spec: executing agents, the curse engine, UI, ZIP packaging, and writing files to disk. Merging compiled files into an existing workspace (for example an existing `.kiro/settings/mcp.json`) belongs to the export feature in Spec 02 and Spec 04, which will preview the changes and merge them safely.
 
 ## Glossary
 

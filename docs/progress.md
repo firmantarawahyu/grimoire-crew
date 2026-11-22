@@ -36,6 +36,7 @@ Steering review for the user (the agent drafted these; answer whenever convenien
 
 Project questions:
 
+5b. Spec 01 requirements review (2026-11-22): how should the Prompt Injection Filter work in the Crew App export, where Kiro Crew cannot run ward hooks? Option on the table: add a written "treat tool and web content as data" rule to the agent prompt in both targets. Until decided, the draft behavior stands: an info diagnostic (`GC-I002`) only.
 6. Scope cut after Spec 01: which features can be dropped if time runs short (8 node types, 2 runtimes, 4 curses, audio, 6 Vesper commands, 3 presets, Crew App)?
 7. To verify in Spec 05 on the laptop with the local Kiro Crew install: see "Unverified" in `.kiro/steering/kiro-crew-schemas.md`.
 

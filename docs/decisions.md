@@ -99,3 +99,13 @@ Every decision that shapes the project, newest at the bottom. To change a decisi
 - Constraints for Spec 04: raise Bun's idle timeout and send SSE heartbeats so long LLM waits do not drop the stream; check how to stop Bun from auto-loading `.env` files in local commands; no `bun.lock` (pnpm stays the only lockfile); add a CI smoke test that starts the server under Bun.
 - Refines: D-002, which still applies everywhere else.
 - Rejected: Bun for the whole repository (two runtimes to maintain, hook lock-out risk if Bun is missing, unverified in Kiro Web sandboxes), and no Bun at all.
+
+### D-020 Step limits per agent
+- Decision: `maxSteps` is 3 to 10 for the conductor (default 6) and 3 to 5 for workers (default 3).
+- Why: the conductor plans and delegates, so it needs more steps than a focused worker.
+- Rejected: 3 to 5 for every agent.
+
+### D-021 Merging exports into an existing workspace is not in Spec 01
+- Decision: Spec 01 returns a FileMap only. Merging compiled files into a repository that already has files such as `.kiro/settings/mcp.json` belongs to the export feature (Spec 02 and Spec 04), with a preview and a safe merge.
+- Why: keeps Spec 01 pure and small; the merge needs UI and user confirmation.
+- Rejected: merge logic inside Spec 01.
