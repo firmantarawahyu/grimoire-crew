@@ -41,6 +41,14 @@ jobs:
             exit 1
           fi
 
+      - name: Upload the rebuilt Crew bundle for comparison
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crew-bundle-ci
+          path: apps/crew-app/ui/dist/index.mjs
+          retention-days: 3
+
       - name: Kiroween submission guard
         run: node scripts/kiro-submission-guard.mjs
 
